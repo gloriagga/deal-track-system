@@ -1,14 +1,43 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Login from '../components/auth/Login';
+import Dashboard from '../components/dashboard/Dashboard';
 
 const Index = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
+      setIsAuthenticated(true);
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  const handleLogin = (userData) => {
+    setIsAuthenticated(true);
+    setUser(userData);
+    localStorage.setItem('token', userData.token);
+    localStorage.setItem('user', JSON.stringify(userData));
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setUser(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  };
+
+  if (!isAuthenticated) {
+    return <Login onLogin={handleLogin} />;
+  }
+
+  return <Dashboard user={user} onLogout={handleLogout} />;
 };
 
 export default Index;
