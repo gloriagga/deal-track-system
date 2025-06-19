@@ -53,8 +53,8 @@ const AdminPanel = ({ user }) => {
     {
       id: 3,
       name: 'Pedro Costa',
-      email: 'suporte@empresa.com',
-      role: 'Analista de Suporte',
+      email: 'assistente@empresa.com',
+      role: 'Assistente de Suporte',
       sector: 'Suporte',
       status: 'Ativo',
       lastLogin: '2024-06-17 16:30',
@@ -313,12 +313,12 @@ const AdminPanel = ({ user }) => {
           </CardContent>
         </Card>
 
-        {/* Perfil Suporte */}
+        {/* Perfil Assistente */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Shield className="w-5 h-5 text-yellow-600" />
-              Analista de Suporte
+              Assistente de Suporte
             </CardTitle>
             <CardDescription>Acesso básico para suporte</CardDescription>
           </CardHeader>

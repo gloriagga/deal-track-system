@@ -34,10 +34,10 @@ const Login = ({ onLogin }) => {
     },
     {
       id: 3,
-      email: 'suporte@empresa.com',
+      email: 'assistente@empresa.com',
       password: '123456',
       name: 'Pedro Costa',
-      role: 'Analista de Suporte',
+      role: 'Assistente de Suporte',
       sector: 'Suporte',
       permissions: ['dashboard', 'clientes']
     }
@@ -141,7 +141,7 @@ const Login = ({ onLogin }) => {
               <div className="space-y-2 text-sm text-gray-600">
                 <div><strong>Gerente:</strong> gerente@empresa.com / 123456</div>
                 <div><strong>Analista:</strong> analista@empresa.com / 123456</div>
-                <div><strong>Suporte:</strong> suporte@empresa.com / 123456</div>
+                <div><strong>Assistente:</strong> assistente@empresa.com / 123456</div>
               </div>
             </div>
           </CardContent>

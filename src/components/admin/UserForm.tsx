@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,7 +35,7 @@ const UserForm = ({ user, onClose }) => {
   const roles = [
     'Gerente Comercial',
     'Analista Comercial',
-    'Analista de Suporte',
+    'Assistente de Suporte',
     'Coordenador',
     'Diretor'
   ];
@@ -88,7 +87,7 @@ const UserForm = ({ user, onClose }) => {
       case 'Analista Comercial':
         permissions = ['dashboard', 'clientes', 'contratos', 'oportunidades'];
         break;
-      case 'Analista de Suporte':
+      case 'Assistente de Suporte':
         permissions = ['dashboard', 'clientes'];
         break;
       case 'Coordenador':
