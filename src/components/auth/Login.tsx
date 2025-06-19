@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -79,7 +80,7 @@ const Login = ({ onLogin }) => {
             <img 
               src="/lovable-uploads/cc2e3ce4-ff81-4016-9667-6f0a8494a20f.png" 
               alt="Arcus Logo" 
-              className="h-20 w-auto"
+              className="h-80 w-80 object-contain"
             />
           </div>
           <p className="text-gray-600 mt-2">Sistema integrado de gestão comercial</p>
