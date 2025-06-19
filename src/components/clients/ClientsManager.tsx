@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -99,6 +98,9 @@ const ClientsManager = ({ user }) => {
     setShowForm(true);
   };
 
+  // Check if user can create new clients (not assistente)
+  const canCreateClients = user.role !== 'Assistente de Suporte';
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -109,10 +111,12 @@ const ClientsManager = ({ user }) => {
             {filteredClients.length} clientes encontrados
           </p>
         </div>
-        <Button onClick={handleNewClient} className="bg-blue-600 hover:bg-blue-700">
-          <UserPlus className="w-4 h-4 mr-2" />
-          Novo Cliente
-        </Button>
+        {canCreateClients && (
+          <Button onClick={handleNewClient} className="bg-blue-600 hover:bg-blue-700">
+            <UserPlus className="w-4 h-4 mr-2" />
+            Novo Cliente
+          </Button>
+        )}
       </div>
 
       {/* Filtros e busca */}

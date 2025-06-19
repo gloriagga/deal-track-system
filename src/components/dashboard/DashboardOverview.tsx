@@ -1,250 +1,266 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { 
   Users, 
   FileText, 
   TrendingUp, 
   DollarSign,
   UserPlus,
-  AlertTriangle,
-  Activity,
-  Target
+  Eye,
+  Calendar,
+  Activity
 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const DashboardOverview = ({ user }) => {
-  // Dados simulados para demonstração
-  const metrics = {
-    totalClients: 1247,
-    activeContracts: 156,
-    monthlyRevenue: 89500,
-    conversionRate: 23.5,
-    newClientsThisMonth: 34,
-    pendingOpportunities: 67
-  };
-
-  const pipelineData = [
-    { name: 'Prospecção', value: 45, color: '#8B5CF6' },
-    { name: 'Qualificação', value: 32, color: '#06B6D4' },
-    { name: 'Proposta', value: 23, color: '#F59E0B' },
-    { name: 'Negociação', value: 18, color: '#EF4444' },
-    { name: 'Fechado', value: 12, color: '#10B981' }
+  // Dados simulados para os gráficos
+  const data = [
+    { name: 'Jan', clientes: 40, contratos: 24, oportunidades: 18 },
+    { name: 'Fev', clientes: 30, contratos: 13, oportunidades: 20 },
+    { name: 'Mar', clientes: 20, contratos: 98, oportunidades: 12 },
+    { name: 'Abr', clientes: 27, contratos: 39, oportunidades: 22 },
+    { name: 'Mai', clientes: 18, contratos: 48, oportunidades: 17 },
+    { name: 'Jun', clientes: 23, contratos: 38, oportunidades: 25 },
+    { name: 'Jul', clientes: 34, contratos: 43, oportunidades: 21 },
+    { name: 'Ago', clientes: 26, contratos: 56, oportunidades: 8 },
+    { name: 'Set', clientes: 37, contratos: 28, oportunidades: 15 },
+    { name: 'Out', clientes: 42, contratos: 34, oportunidades: 28 },
+    { name: 'Nov', clientes: 28, contratos: 45, oportunidades: 19 },
+    { name: 'Dez', clientes: 39, contratos: 50, oportunidades: 30 },
   ];
 
-  const monthlyPerformance = [
-    { month: 'Jan', vendas: 45000, metas: 50000 },
-    { month: 'Fev', vendas: 52000, metas: 50000 },
-    { month: 'Mar', vendas: 48000, metas: 55000 },
-    { month: 'Abr', vendas: 61000, metas: 55000 },
-    { month: 'Mai', vendas: 58000, metas: 60000 },
-    { month: 'Jun', vendas: 67000, metas: 60000 }
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+  const pieData = [
+    { name: 'Ativos', value: 400 },
+    { name: 'Inativos', value: 300 },
+    { name: 'Prospectos', value: 300 },
+    { name: 'Em negociação', value: 200 },
   ];
 
-  const sectorPerformance = [
-    { setor: 'Comercial', clientes: 456, contratos: 89 },
-    { setor: 'Suporte', clientes: 234, contratos: 45 },
-    { setor: 'Financeiro', clientes: 123, contratos: 22 },
-    { setor: 'Operações', clientes: 434, contratos: 76 }
+  // Dados simulados para as métricas
+  const totalClientes = data.reduce((acc, curr) => acc + curr.clientes, 0);
+  const totalContratos = data.reduce((acc, curr) => acc + curr.contratos, 0);
+  const totalOportunidades = data.reduce((acc, curr) => acc + curr.oportunidades, 0);
+  const receitaTotal = totalContratos * 1500; // Simulação de receita
+
+  // Dados simulados para atividades recentes
+  const recentActivities = [
+    { id: 1, description: 'Novo cliente "Empresa XPTO" cadastrado', date: '2024-07-01' },
+    { id: 2, description: 'Contrato #123 renovado com sucesso', date: '2024-06-28' },
+    { id: 3, description: 'Oportunidade "Venda de Software" movida para a fase de proposta', date: '2024-06-25' },
+    { id: 4, description: 'Relatório de vendas de Junho gerado', date: '2024-06-22' },
+    { id: 5, description: 'Usuário "Carlos Silva" acessou o sistema', date: '2024-06-20' },
   ];
+
+  // Dados simulados para oportunidades
+  const opportunities = [
+    { id: 1, name: 'Venda de Software', client: 'Empresa XPTO', value: 15000, status: 'Proposta' },
+    { id: 2, name: 'Consultoria em Marketing', client: 'Startup ABC', value: 8000, status: 'Qualificação' },
+    { id: 3, name: 'Treinamento de Equipes', client: 'Indústria XYZ', value: 12000, status: 'Negociação' },
+  ];
+
+  // Check if user can create new clients (not assistente)
+  const canCreateClients = user.role !== 'Assistente de Suporte';
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard Comercial</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600 mt-1">
-            Bem-vindo, {user.name} • {user.sector}
+            Bem-vindo de volta, {user.name}
           </p>
         </div>
-        <div className="flex gap-2">
+        {canCreateClients && (
           <Button className="bg-blue-600 hover:bg-blue-700">
             <UserPlus className="w-4 h-4 mr-2" />
             Novo Cliente
           </Button>
-        </div>
+        )}
       </div>
 
-      {/* Métricas principais */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Clientes</CardTitle>
-            <Users className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metrics.totalClients.toLocaleString()}</div>
-            <p className="text-xs text-green-600 flex items-center mt-1">
-              <TrendingUp className="w-3 h-3 mr-1" />
-              +12% vs mês anterior
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Contratos Ativos</CardTitle>
-            <FileText className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metrics.activeContracts}</div>
-            <p className="text-xs text-green-600 flex items-center mt-1">
-              <TrendingUp className="w-3 h-3 mr-1" />
-              +8% vs mês anterior
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Receita Mensal</CardTitle>
-            <DollarSign className="h-4 w-4 text-yellow-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              R$ {metrics.monthlyRevenue.toLocaleString()}
-            </div>
-            <p className="text-xs text-green-600 flex items-center mt-1">
-              <TrendingUp className="w-3 h-3 mr-1" />
-              +15% vs mês anterior
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Taxa de Conversão</CardTitle>
-            <Target className="h-4 w-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{metrics.conversionRate}%</div>
-            <p className="text-xs text-red-600 flex items-center mt-1">
-              <AlertTriangle className="w-3 h-3 mr-1" />
-              -2% vs mês anterior
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Gráficos principais */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Pipeline de vendas */}
+      {/* Métricas */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader>
-            <CardTitle>Pipeline de Vendas</CardTitle>
-            <CardDescription>Distribuição de oportunidades por etapa</CardDescription>
+            <CardTitle>Clientes</CardTitle>
+            <CardDescription>Total de clientes cadastrados</CardDescription>
+          </CardHeader>
+          <CardContent className="text-3xl font-bold text-blue-600">
+            {totalClientes}
+            <Users className="w-5 h-5 ml-2 inline-block align-middle" />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Contratos</CardTitle>
+            <CardDescription>Número total de contratos ativos</CardDescription>
+          </CardHeader>
+          <CardContent className="text-3xl font-bold text-green-600">
+            {totalContratos}
+            <FileText className="w-5 h-5 ml-2 inline-block align-middle" />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Oportunidades</CardTitle>
+            <CardDescription>Oportunidades de negócio em aberto</CardDescription>
+          </CardHeader>
+          <CardContent className="text-3xl font-bold text-orange-600">
+            {totalOportunidades}
+            <TrendingUp className="w-5 h-5 ml-2 inline-block align-middle" />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Receita</CardTitle>
+            <CardDescription>Receita total estimada</CardDescription>
+          </CardHeader>
+          <CardContent className="text-3xl font-bold text-purple-600">
+            R$ {receitaTotal.toLocaleString()}
+            <DollarSign className="w-5 h-5 ml-2 inline-block align-middle" />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Gráficos */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Visão Geral</CardTitle>
+            <CardDescription>Clientes, contratos e oportunidades por mês</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="clientes" fill="#8884d8" name="Clientes" />
+                <Bar dataKey="contratos" fill="#82ca9d" name="Contratos" />
+                <Bar dataKey="oportunidades" fill="#ffc658" name="Oportunidades" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Status dos Clientes</CardTitle>
+            <CardDescription>Distribuição dos clientes por status</CardDescription>
+          </CardHeader>
+          <CardContent className="flex items-center justify-center">
+            <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={pipelineData}
+                  dataKey="value"
+                  isAnimationActive={false}
+                  data={pieData}
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
-                  dataKey="value"
-                  label={({ name, value }) => `${name}: ${value}`}
+                  fill="#8884d8"
+                  label
                 >
-                  {pipelineData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
+                  {
+                    pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))
+                  }
                 </Pie>
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
-
-        {/* Performance mensal */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Performance vs Meta</CardTitle>
-            <CardDescription>Vendas mensais comparadas às metas</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={monthlyPerformance}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip formatter={(value) => `R$ ${value.toLocaleString()}`} />
-                <Bar dataKey="vendas" fill="#3B82F6" name="Vendas" />
-                <Bar dataKey="metas" fill="#E5E7EB" name="Meta" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
       </div>
 
-      {/* Performance por setor */}
+      {/* Atividades Recentes */}
       <Card>
         <CardHeader>
-          <CardTitle>Performance por Setor</CardTitle>
-          <CardDescription>Distribuição de clientes e contratos por setor</CardDescription>
+          <CardTitle>Atividades Recentes</CardTitle>
+          <CardDescription>Últimas atividades no sistema</CardDescription>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={sectorPerformance}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="setor" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="clientes" fill="#06B6D4" name="Clientes" />
-              <Bar dataKey="contratos" fill="#10B981" name="Contratos" />
-            </BarChart>
-          </ResponsiveContainer>
+          <ul className="list-none p-0">
+            {recentActivities.map(activity => (
+              <li key={activity.id} className="py-2 border-b border-gray-200 last:border-none">
+                <div className="flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm text-gray-800">{activity.description}</span>
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  <Calendar className="w-3 h-3 mr-1 inline-block" />
+                  {new Date(activity.date).toLocaleDateString('pt-BR')}
+                </div>
+              </li>
+            ))}
+          </ul>
         </CardContent>
       </Card>
 
-      {/* Alertas e ações rápidas */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <AlertTriangle className="w-5 h-5 mr-2 text-orange-500" />
-              Alertas Importantes
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-              <span className="text-sm">15 contratos vencem em 30 dias</span>
-              <Button size="sm" variant="outline">Ver detalhes</Button>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-              <span className="text-sm">8 clientes sem contato há 90 dias</span>
-              <Button size="sm" variant="outline">Ativar</Button>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-              <span className="text-sm">23 propostas aguardando retorno</span>
-              <Button size="sm" variant="outline">Acompanhar</Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Activity className="w-5 h-5 mr-2 text-blue-500" />
-              Ações Rápidas
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button className="w-full justify-start" variant="outline">
-              <UserPlus className="w-4 h-4 mr-2" />
-              Cadastrar novo cliente
-            </Button>
-            <Button className="w-full justify-start" variant="outline">
-              <FileText className="w-4 h-4 mr-2" />
-              Criar nova proposta
-            </Button>
-            <Button className="w-full justify-start" variant="outline">
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Registrar oportunidade
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Oportunidades */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Oportunidades</CardTitle>
+          <CardDescription>Oportunidades de negócio em aberto</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Nome
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Cliente
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Valor
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Ações
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {opportunities.map(opportunity => (
+                  <tr key={opportunity.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{opportunity.name}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{opportunity.client}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">R$ {opportunity.value.toLocaleString()}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Badge variant="secondary">{opportunity.status}</Badge>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <Button variant="outline" size="sm">
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
