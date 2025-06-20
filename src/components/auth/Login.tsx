@@ -1,4 +1,5 @@
 
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -83,7 +84,6 @@ const Login = ({ onLogin }) => {
               className="h-80 w-80 object-contain"
             />
           </div>
-          <p className="text-gray-600 mt-2">Sistema integrado de gestão comercial</p>
         </div>
 
         <Card className="shadow-lg">
@@ -155,3 +155,4 @@ const Login = ({ onLogin }) => {
 };
 
 export default Login;
+
