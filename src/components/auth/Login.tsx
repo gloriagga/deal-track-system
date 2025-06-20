@@ -1,5 +1,3 @@
-
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -79,7 +77,7 @@ const Login = ({ onLogin }) => {
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center mb-4">
             <img 
-              src="/lovable-uploads/cc2e3ce4-ff81-4016-9667-6f0a8494a20f.png" 
+              src="/lovable-uploads/7b7b652b-40ba-4f68-a691-05a99c13bb6b.png" 
               alt="Arcus Logo" 
               className="h-80 w-80 object-contain"
             />
@@ -155,4 +153,3 @@ const Login = ({ onLogin }) => {
 };
 
 export default Login;
-
